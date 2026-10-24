@@ -1,0 +1,12 @@
+{
+  "ts": "open_time",
+  "symbol": "symbol",
+  "qty": "lots",
+  "entryPrice": "open_price",
+  "exitPrice": "close_price",
+  "pnlNet": "profit",
+  "pnlKind": "gross",
+  "fees": "commission",
+  "extraCosts": ["swap"],
+  "costSign": "negative"
+}
