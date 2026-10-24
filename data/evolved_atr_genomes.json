@@ -1,0 +1,54 @@
+{
+  "bestFx": {
+    "k_spacing": 1.69,
+    "k_tp": 3.49,
+    "k_stop": 6.39,
+    "k_discount": 2.36,
+    "fitness": 1.42,
+    "profitFactor": 1.33,
+    "winRate": 75.6,
+    "dataset": "4,705h Bitso usd_mxn real"
+  },
+  "bestBtc": {
+    "k_spacing": 1.21,
+    "k_tp": 3.47,
+    "k_stop": 3.23,
+    "k_discount": 2.36,
+    "fitness": 3.363,
+    "profitFactor": 2.96,
+    "winRate": 73.9,
+    "dataset": "17,520h Binance BTCUSDT"
+  },
+  "bestSol": {
+    "k_spacing": 0.78,
+    "k_tp": 2.91,
+    "k_stop": 3.9,
+    "k_discount": 3.07,
+    "fitness": 4.259,
+    "profitFactor": 2.85,
+    "winRate": 81,
+    "dataset": "17,520h Binance SOLUSDT"
+  },
+  "bestAvax": {
+    "k_spacing": 0.94,
+    "k_tp": 2.54,
+    "k_stop": 3.61,
+    "k_discount": 2.36,
+    "fitness": 3.788,
+    "profitFactor": 2.16,
+    "winRate": 75.3,
+    "dataset": "17,520h Binance AVAXUSDT"
+  },
+  "bestSui": {
+    "k_spacing": 1.3,
+    "k_tp": 2.56,
+    "k_stop": 2.99,
+    "k_discount": 1.93,
+    "fitness": 2.974,
+    "profitFactor": 2.03,
+    "winRate": 70.4,
+    "dataset": "17,520h Binance SUIUSDT"
+  },
+  "updatedAt": "2026-10-16T02:32:40.704Z",
+  "cleanedAt": "2026-10-16T02:32:40.704Z"
+}
