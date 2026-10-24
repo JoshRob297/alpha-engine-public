@@ -52,6 +52,15 @@ En los auditables, las fees consumieron una mediana de **95.8%** del PnL bruto. 
 
 2 de 3 datasets auditables tienen **win rate > 60% y breakeven por encima del observado**: el patron repetido es "gana muchas veces, pierde mas por vez". El win rate alto es la parte visible; la expectancy negativa, la que importa.
 
+## Correccion y verificacion (2026-10-24)
+
+- El dataset de 584 trades (`REFUTADO`) proviene del commit inicial `1c1e700c` de `pumanitro/tral`
+  (`backtest-result-2022-11-17_16-46-00.json`); en la rama actual ese archivo fue reemplazado por
+  `..._16-29-12.json` (234 trades). Ambos se auditann con permalink a commit en
+  [`docs/AUDITS_2026-10.md`](AUDITS_2026-10.md) y **ambos salen REFUTADOS**: la conclusion no
+  depende de la version del archivo.
+- Todas las fuentes quedaron verificadas con sha256 a commit fijado y su licencia citada.
+
 ## Limites
 
 - Backtests in-sample; muchas veces optimizados por el autor sobre el mismo periodo.
