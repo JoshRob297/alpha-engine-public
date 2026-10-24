@@ -8,8 +8,6 @@ import { AerodromeSlipstreamDriver } from "../dex/aerodrome-contract.js";
 import { BinanceLiveDriver } from "../cex/binance-live-driver.js";
 
 export const REAL_LEDGER_FILE = "data/real_accounting_ledger.json";
-export const SECRETS_FILE = ".env.secrets";
-
 export interface DepositEvent {
   id: string;
   timestamp: string;
