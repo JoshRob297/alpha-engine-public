@@ -33,7 +33,7 @@ describe("Modular Engine Core Tests", () => {
     expect(allocator).toBeDefined();
   });
 
-  test("CapitalAllocator sincroniza dinámicamente los pools de Base L2 sin slots quemados", async () => {
+  test.skipIf(process.env.OFFLINE === "1")("CapitalAllocator sincroniza dinámicamente los pools de Base L2 sin slots quemados", async () => {
     const orch = new DynamicAlphaOrchestrator(1000);
     const allocator = new CapitalAllocator(orch);
     await allocator.syncWithWatchlist();

@@ -14,7 +14,7 @@ describe("Aerodrome Slipstream Driver", () => {
       amount1Desired: "50000000",             // 0.5 cbBTC (8 decimals)
       amount0Min: "0",
       amount1Min: "0",
-      recipient: "<wallet-address>",
+      recipient: "0x1111111111111111111111111111111111111111",
       deadline: 1800000000,
     };
 
@@ -29,6 +29,6 @@ describe("Aerodrome Slipstream Driver", () => {
     // Verificar que token0 empacado contiene la dirección limpia sin prefijo 0x
     expect(calldata.includes("4200000000000000000000000000000000000006")).toBe(true);
     // Verificar que recipient empacado contiene la hot wallet
-    expect(calldata.includes("eea90d756582eb39ced1fed655de2254bb6f3297")).toBe(true);
+    expect(calldata.includes("1111111111111111111111111111111111111111")).toBe(true);
   });
 });
