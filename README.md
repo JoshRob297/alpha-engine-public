@@ -145,3 +145,11 @@ Prospección y auditoría en lote de repos públicos: `bun run prospect:freqtrad
 
 Archivo técnico en mantenimiento: la ventana OOS vigente corre en modo Paper y el veredicto formal se
 emite a los 191 cierres. El código del motor está congelado; el desarrollo activo es el kit de auditoría.
+
+## Licencia
+
+- **Código** (motor, laboratorio, kit, scripts): [MIT](LICENSE).
+- **Documentación** (`docs/`, `README.md`, informes de auditoría): [CC-BY-4.0](docs/LICENSE.md) — úsala y
+  difúndela libremente, con atribución al proyecto.
+
+Los datos de terceros auditados se citan con su fuente y pertenecen a sus autores.

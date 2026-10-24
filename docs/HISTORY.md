@@ -161,3 +161,10 @@ Detalle por etapa: `docs/CONCLUSIONS.md` (cierre del 2-oct), `docs/LIVE_PAPER_VA
 | 19-oct | Inferencia robusta, walk-forward, escalado; segundo incidente (10.28) |
 | 22-oct | Régimen de asignación lento (12 h) |
 | 24-oct | Auditoría on-chain de fees; kit de auditoría, CLI, adaptadores, CI; ventana OOS vigente |
+
+---
+
+## Licencia
+
+Código: MIT. Documentación (incluido este documento): CC-BY-4.0 con atribución. Ver [`LICENSE`](../LICENSE)
+y [`docs/LICENSE.md`](LICENSE.md).
