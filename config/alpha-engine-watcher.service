@@ -1,0 +1,15 @@
+[Unit]
+Description=Alpha Engine Auto-Deployment Deposit Watcher
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/user/proyectos/alpha-engine
+ExecStart=/home/user/.local/bin/bun run scripts/deploy-pool.ts
+Restart=on-failure
+RestartSec=15
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

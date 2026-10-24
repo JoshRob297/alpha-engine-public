@@ -1,0 +1,47 @@
+{
+  "name": "alpha-engine",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "audit:cli": "bun run scripts/alpha-audit.ts",
+    "audit:demo": "bun run scripts/audit-demo.ts",
+    "audit:dex-fees": "bun run scripts/dex-fee-growth-audit.ts",
+    "audit:dex-inputs": "bun run scripts/dex-slot-audit-inputs.ts",
+    "audit:pnl": "bun run scripts/independent-pnl-audit.ts",
+    "audit:scaling": "bun run scripts/capital-scaling-analysis.ts",
+    "backtest:6m": "bun run src/research/backtest-six-months.ts",
+    "backtest:6m:v2": "bun run src/research/backtest-six-months-v2.ts",
+    "clean:audit": "bun run scripts/quarantine-stub-audit-events.ts",
+    "clean:genomes": "bun run scripts/clean-genome-store.ts",
+    "dex:economics": "bun run src/research/run-dex-economics.ts",
+    "import:freqtrade": "bun run scripts/import-freqtrade.ts",
+    "l2:collect": "bun run scripts/collect-l2.ts",
+    "laya:predictive": "bun run scripts/laya-predictive-test.ts",
+    "monitor:equity": "bun run scripts/equity-drift-monitor.ts",
+    "prospect:freqtrade": "bun run scripts/prospect-freqtrade.ts",
+    "replay:decisions": "bun run scripts/replay-decisions.ts",
+    "research": "bun run src/research/run-research.ts",
+    "start": "bun run src/daemon/dynamic-orchestrator.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck:scripts": "tsc --noEmit -p tsconfig.scripts.json",
+    "universe:init": "bun run scripts/init-measurement-universe.ts",
+    "validate:oos": "bun run src/research/validation-oos.ts",
+    "validate:paper": "bun run scripts/paper-validation-report.ts",
+    "validate:regimes": "bun run src/research/validation-regimes.ts",
+    "verify:chain": "bun run scripts/verify-audit-chain.ts",
+    "verify:open-items": "bun run scripts/verify-open-items.ts",
+    "walk-forward": "bun run scripts/walk-forward-stability.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3"
+  },
+  "bin": {
+    "alpha-audit": "./scripts/alpha-audit.ts"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
+  }
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=Alpha Engine Dynamic Multi-Asset Trading Daemon (CEX + DEX)
+After=network.target laya.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/user/proyectos/alpha-engine
+ExecStart=/home/user/.local/bin/bun run src/daemon/dynamic-orchestrator.ts
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

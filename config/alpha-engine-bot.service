@@ -1,0 +1,16 @@
+[Unit]
+Description=Alpha Engine Telegram Interactive Controller Bot
+After=network.target alpha-engine.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/user/proyectos/alpha-engine
+ExecStart=/home/user/.local/bin/bun run src/telemetry/telegram-bot.ts
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

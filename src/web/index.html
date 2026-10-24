@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Alpha Engine // Terminal Cuantitativa Institucional</title>
+  <!-- TradingView Lightweight Charts Oficial v4.2 -->
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    :root {
+      --bg-base: #080a0f;
+      --bg-surface: #0f131f;
+      --bg-card: #151a2a;
+      --bg-card-hover: #1a2034;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.4);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.12);
+      --cyan: #06b6d4;
+      --cyan-bg: rgba(6, 182, 212, 0.12);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.12);
+      --purple: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.12);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    /* Header & Top Bar */
+    header {
+      background: rgba(15, 19, 31, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 24px;
+    }
+
+    .top-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title span {
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 2px 6px;
+      background: var(--cyan-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    /* Segmented Control (Tabs Principales) */
+    .segmented-control {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 4px;
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .segment-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .segment-btn.active.real {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .segment-btn.active.sim {
+      background: var(--amber-bg);
+      color: var(--amber);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Contenedor Principal */
+    main {
+      max-width: 1400px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    .view-pane {
+      display: none;
+    }
+
+    .view-pane.active {
+      display: block;
+    }
+
+    /* KPIs Hero */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-family: var(--font-mono);
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Secciones Generales */
+    .section-wrap {
+      margin-bottom: 32px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--text-main);
+    }
+
+    .section-count {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    /* Tarjetas Tácticas de Malla */
+    .tactical-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .tactical-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+
+    .tactical-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-asset-name {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .card-asset-book {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      margin-left: 6px;
+    }
+
+    .card-role-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .pill-green {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .pill-cyan {
+      background: var(--cyan-bg);
+      color: var(--cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .stat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+    }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    /* Tablas con Scroll y Paginación */
+    .table-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      max-height: 480px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-dim);
+      font-weight: 600;
+      padding: 12px 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 11px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-main);
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.01);
+      font-size: 12px;
+    }
+
+    .page-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      transition: all 0.15s ease;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      border-color: var(--border-focus);
+      background: var(--bg-card-hover);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-size-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 5px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      outline: none;
+    }
+
+    /* Barra de Acciones Rápidas */
+    .quick-actions-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .qa-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qa-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .qa-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-focus);
+    }
+
+    .qa-btn-danger {
+      background: var(--rose-bg);
+      color: var(--rose);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .qa-btn-danger:hover {
+      background: rgba(244, 63, 94, 0.2);
+    }
+
+    /* Responsividad Móvil Pulida */
+    @media (max-width: 768px) {
+      header { padding: 10px 14px; }
+      main { padding: 0 12px; margin: 12px auto; }
+      .top-container { flex-direction: column; align-items: stretch; gap: 10px; }
+      .segmented-control { width: 100%; justify-content: center; }
+      .segment-btn { padding: 6px 12px; font-size: 12px; flex: 1; justify-content: center; }
+      .kpi-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+      .kpi-card { padding: 14px 16px; }
+      .kpi-value { font-size: 22px; }
+      .quick-actions-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 12px; }
+      .qa-group { justify-content: space-between; flex-wrap: wrap; }
+      .tactical-grid { grid-template-columns: 1fr; gap: 12px; }
+      .section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .section-head > div { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+      #tv-symbol-selector-group { overflow-x: auto; max-width: 100%; padding-bottom: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header>
+    <div class="top-container">
+      <div class="brand-title">
+        ALPHA ENGINE <span>MODULAR V3</span>
+      </div>
+
+      <!-- Segmented Control Central -->
+      <div class="segmented-control">
+        <button class="segment-btn active real" id="btn-real" onclick="setMode('real')">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--emerald);"></span>
+          Custodia Real (Live)
+        </button>
+        <button class="segment-btn sim" id="btn-sim" onclick="setMode('sim')">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber);"></span>
+          Simulación (Paper)
+        </button>
+      </div>
+
+      <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+        <span id="daemon-pulse-dot" style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--emerald);"></span>
+        <span id="system-time">--:--:--</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main>
+
+    <!-- ============================================================== -->
+    <!-- 1. VISTA: CUSTODIA REAL (LIVE) -->
+    <!-- ============================================================== -->
+    <div id="pane-real" class="view-pane active">
+
+      <!-- Hero KPIs Reales -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Capital Real Fondeado</span>
+            <span class="badge-pill pill-cyan">Binance Spot</span>
+          </div>
+          <div class="kpi-value" id="real-kpi-nav-usd">$0.00 USDT</div>
+          <div class="kpi-sub" id="real-kpi-nav-sub">Gas: 0.000157 BNB // Esperando Depósito SPEI</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>PnL Real Neto</span>
+            <span class="badge-pill pill-green" id="real-kpi-roi">+0.00% ROI</span>
+          </div>
+          <div class="kpi-value" id="real-kpi-pnl" style="color:var(--emerald);">+$0.00 USD</div>
+          <div class="kpi-sub" id="real-kpi-pnl-usd">Comisiones Maker (0.10%) Descontadas</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Tasa de Acierto Live</span>
+            <span class="badge-pill pill-green">Binance Live</span>
+          </div>
+          <div class="kpi-value" id="real-kpi-winrate">--%</div>
+          <div class="kpi-sub" id="real-kpi-trades-count">0 órdenes ejecutadas</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Régimen y Microestructura</span>
+            <span class="badge-pill pill-cyan" id="real-kpi-regime">BALANCED</span>
+          </div>
+          <div class="kpi-value" id="real-kpi-ofi" style="font-size:18px; color:var(--cyan);">OFI: Activo</div>
+          <div class="kpi-sub" id="real-kpi-flow">Laya Guardrails: Modo Espera</div>
+        </div>
+      </div>
+
+      <!-- Custodia y Billeteras Live (CEX + DEX) -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Billeteras y Custodia en Vivo (CEX + DEX)</div>
+          <span class="section-count">Arquitectura Dual Lista</span>
+        </div>
+
+        <div class="tactical-grid">
+
+          <!-- Tarjeta 1: Cuenta Binance Spot Live -->
+          <div class="tactical-card">
+            <div class="card-title-row">
+              <div>
+                <div class="card-asset-name">
+                  Binance Spot
+                  <span class="card-asset-book">CEX Principal</span>
+                </div>
+                <div class="card-role-desc">Trading Maker Post-Only (LIMIT_MAKER) // Liquidación Nativa en USDT</div>
+              </div>
+              <span class="badge-pill pill-cyan">BINANCE LIVE</span>
+            </div>
+
+            <div class="stat-list">
+              <div class="stat-item">
+                <span class="stat-label">Saldo Tether (USDT):</span>
+                <span class="stat-val" id="binance-usdt" style="color:var(--emerald);">$0.00 USDT</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Saldo Gas Fees (BNB):</span>
+                <span class="stat-val" id="binance-bnb">0.000157 BNB</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Comisión Maker Efectiva:</span>
+                <span class="stat-val">0.10% (Post-Only)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Filtro Mínimo Notional:</span>
+                <span class="stat-val">$5.00 USD por orden</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Estado de Enlace API:</span>
+                <span class="stat-val" style="color:var(--emerald);">Verificado (IP Whitelist Compute-node)</span>
+              </div>
+            </div>
+
+            <div style="font-size:11px; color:var(--text-dim); line-height:1.4; padding:4px 0;">
+              Ejecución algorítmica autónoma. Retiros bloqueados en credenciales API; depósitos y extracciones fiduciarias 100% manuales vía SPEI.
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Hot Wallet Base L2 (Aerodrome Slipstream) -->
+          <div class="tactical-card">
+            <div class="card-title-row">
+              <div>
+                <div class="card-asset-name">
+                  Hot Wallet Base L2
+                  <span class="card-asset-book">0xeEa9...3297</span>
+                </div>
+                <div class="card-role-desc">DEX Liquidez Concentrada // Aerodrome Slipstream NFTs</div>
+              </div>
+              <span class="badge-pill pill-amber" id="base-wallet-status">ESPERANDO FONDEO</span>
+            </div>
+
+            <div class="stat-list">
+              <div class="stat-item">
+                <span class="stat-label">Saldo Gas L2 (ETH):</span>
+                <span class="stat-val" id="base-eth-balance">0.000000 ETH</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Saldo Liquidez (USDC/cbBTC):</span>
+                <span class="stat-val" id="base-usd-balance">$0.00 USD</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Posiciones LP Activas:</span>
+                <span class="stat-val" id="base-nft-count">0 NFTs en Aerodrome</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Red On-Chain:</span>
+                <span class="stat-val">Base Mainnet (Chain ID: 8453)</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Auditoría On-Chain:</span>
+                <span class="stat-val">
+                  <a href="https://basescan.org/address/<wallet-address>" target="_blank" style="color:var(--cyan); text-decoration:none;">Ver en Basescan ↗</a>
+                </span>
+              </div>
+            </div>
+
+            <div style="font-size:11px; color:var(--text-dim); line-height:1.4; padding:4px 0;">
+              Billetera dedicada de custodia propia en Base L2. Permisos limitados exclusivamente al NonfungiblePositionManager de Aerodrome Slipstream.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Visor Cronológico de Trades Reales con Paginación -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Registro Contable de Operaciones Reales</div>
+          <span class="section-count" id="real-table-count">0 eventos</span>
+        </div>
+
+        <div class="table-container">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Plataforma</th>
+                  <th>Par / Contrato</th>
+                  <th>Acción</th>
+                  <th>Precio USD</th>
+                  <th>Monto</th>
+                  <th>PnL Neto</th>
+                  <th>ID Orden</th>
+                </tr>
+              </thead>
+              <tbody id="real-trades-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center; color:var(--text-dim); padding:24px;">
+                    Esperando primer depósito de capital operativo vía SPEI en Binance Spot.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginador Real -->
+          <div class="pagination-bar">
+            <div class="page-info" id="real-page-info">Mostrando 0 de 0 operaciones</div>
+            <div class="page-controls">
+              <select class="page-size-select" id="real-page-size" onchange="changePageSize('real', this.value)">
+                <option value="10">10 por página</option>
+                <option value="25">25 por página</option>
+                <option value="50">50 por página</option>
+              </select>
+              <button class="page-btn" id="real-prev-btn" onclick="prevPage('real')" disabled>← Anterior</button>
+              <button class="page-btn" id="real-next-btn" onclick="nextPage('real')" disabled>Siguiente →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 2. VISTA: SIMULACIÓN DE ALTO RENDIMIENTO (PAPER) -->
+    <!-- ============================================================== -->
+    <div id="pane-sim" class="view-pane">
+
+      <!-- Barra de Acciones Simulador -->
+      <div class="quick-actions-bar" style="border-color: rgba(245, 158, 11, 0.2);">
+        <div class="qa-group">
+          <span style="font-size:12px; font-weight:700; color:var(--amber);">Sandbox Virtual:</span>
+          <button class="qa-btn" onclick="togglePause('paper')">Pausar Motor Paper</button>
+          <button class="qa-btn qa-btn-danger" onclick="triggerFlatten('paper')">Resetear Capital Simulado</button>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); font-family:var(--font-mono);">
+          Multi-Activo: CEX (Binance Spot) + DEX (Base L2: Aerodrome) + Cobertura Futuros (Delta-Neutral)
+        </div>
+      </div>
+
+      <!-- Hero KPIs Simulador -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Valor Liquidativo Portafolio (NAV)</span>
+            <span class="badge-pill pill-cyan" id="sim-kpi-equity-badge">En Vivo</span>
+          </div>
+          <div class="kpi-value" id="sim-kpi-nav-usd">$200.00 USD</div>
+          <div class="kpi-sub" id="sim-kpi-nav-sub">Base Asignada: $200.00 USD</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>PnL Consolidado en Vivo</span>
+            <span class="badge-pill pill-green" id="sim-kpi-roi">+0.00% ROI</span>
+          </div>
+          <div class="kpi-value" id="sim-kpi-pnl" style="color:var(--emerald);">+$0.00 USD</div>
+          <div class="kpi-sub" id="sim-kpi-pnl-usd">DEX: +$0.00 | Funding: +$0.00 | CEX: $0.00</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Win Rate / Trades</span>
+            <span class="badge-pill pill-green" id="sim-kpi-pf">PF: 99.9</span>
+          </div>
+          <div class="kpi-value" id="sim-kpi-winrate">100.0%</div>
+          <div class="kpi-sub" id="sim-kpi-trades-count">6 operaciones en sesión</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Régimen Global Jev</span>
+            <span class="badge-pill pill-cyan">BALANCED</span>
+          </div>
+          <div class="kpi-value" id="sim-kpi-regime" style="font-size:18px; color:var(--cyan);">DEFENSIVE_STRESS</div>
+          <div class="kpi-sub">Exposure Cap: 45% // Sortino Parity</div>
+        </div>
+      </div>
+
+      <!-- Fase 0: Atribución de PnL + Estado de Riesgo -->
+      <div class="section-wrap" style="margin-top:16px;">
+        <div class="section-head">
+          <div class="section-title">Atribución de PnL por Componente // Guardarraíles de Riesgo</div>
+          <span class="badge-pill" id="risk-kill-badge" style="background:rgba(16,185,129,0.15); color:var(--emerald);">RIESGO OK</span>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:12px; padding:12px;">
+          <div class="tactical-card" style="margin:0;">
+            <div class="card-role-desc" style="margin-bottom:6px;">ESTADO DE RIESGO</div>
+            <div class="stat-list">
+              <div class="stat-item"><span class="stat-label">PnL realizado hoy:</span><span class="stat-val" id="risk-daily-pnl">$0.00 USD</span></div>
+              <div class="stat-item"><span class="stat-label">Límite pérdida diaria:</span><span class="stat-val" id="risk-daily-limit">--</span></div>
+              <div class="stat-item"><span class="stat-label">Exposición agregada:</span><span class="stat-val" id="risk-exposure">--</span></div>
+              <div class="stat-item"><span class="stat-label">Utilización:</span><span class="stat-val" id="risk-util">--</span></div>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:8px;">
+              <button class="badge-pill" style="cursor:pointer; border:1px solid rgba(244,63,94,0.4); background:rgba(244,63,94,0.1); color:var(--rose);" onclick="riskKill()">Activar Kill-Switch</button>
+              <button class="badge-pill" style="cursor:pointer; border:1px solid rgba(255,255,255,0.15); background:transparent; color:var(--text);" onclick="riskUnkill()">Levantar</button>
+            </div>
+          </div>
+          <div class="tactical-card" style="margin:0;">
+            <div class="card-role-desc" style="margin-bottom:6px;">ATRIBUCIÓN DE PnL (NETO)</div>
+            <div class="table-scroll" style="max-height:180px;">
+              <table>
+                <thead><tr><th>Componente</th><th>Trades</th><th>Bruto</th><th>Fees</th><th>Neto</th></tr></thead>
+                <tbody id="attribution-tbody">
+                  <tr><td colspan="5" style="text-align:center; color:var(--text-dim); padding:12px;">Sin datos aún.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Visual de TradingView (Live Candle & Tactical Lines) -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Terminal Cuantitativa TradingView // Mallas, Rangos DEX y Futuros</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <!-- Selector de temporalidad -->
+            <div style="display:flex; gap:4px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:20px; padding:2px;">
+              <button class="badge-pill pill-cyan" style="cursor:pointer; border:none; outline:none; font-size:10px;" id="tv-tf-15m" onclick="changeTvTimeframe('15m')">15m</button>
+              <button class="badge-pill pill-green" style="cursor:pointer; border:none; outline:none; font-size:10px; font-weight:700;" id="tv-tf-1h" onclick="changeTvTimeframe('1h')">1h</button>
+              <button class="badge-pill pill-cyan" style="cursor:pointer; border:none; outline:none; font-size:10px;" id="tv-tf-4h" onclick="changeTvTimeframe('4h')">4h</button>
+            </div>
+            <div id="tv-symbol-selector-group" style="display:flex; gap:6px;"></div>
+            <button class="badge-pill pill-cyan" style="cursor:pointer; border:1px solid rgba(255,255,255,0.2); outline:none; font-weight:700;" id="tv-layout-toggle-btn" onclick="toggleTvLayout()">VISTA: FOCO (1X)</button>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; margin-bottom:12px;">
+          <div id="tv-charts-wrapper" style="display:flex; flex-direction:column; gap:16px;"></div>
+        </div>
+      </div>
+
+      <!-- Grid de Activos Simulados -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Portafolio Simulado en Operación</div>
+          <span class="section-count" id="sim-cards-count">3 Motores Activos</span>
+        </div>
+
+        <div class="tactical-grid" id="sim-tactical-grid">
+          <!-- Render dinámico de tarjetas simuladas (BTC, SOL, FX, DEX) -->
+        </div>
+      </div>
+
+      <!-- Visor Cronológico de Trades Simulados con Paginación -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Registro Cronológico de Operaciones Simuladas</div>
+          <span class="section-count" id="sim-table-count">0 eventos</span>
+        </div>
+
+        <div class="table-container">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Plataforma</th>
+                  <th>Activo / Par</th>
+                  <th>Acción</th>
+                  <th>Precio Ejecución</th>
+                  <th>Cantidad</th>
+                  <th>PnL Realizado</th>
+                  <th>Tarifa Maker</th>
+                </tr>
+              </thead>
+              <tbody id="sim-trades-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center; color:var(--text-dim); padding:24px;">
+                    Cargando historial de simulación...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginador Sim -->
+          <div class="pagination-bar">
+            <div class="page-info" id="sim-page-info">Mostrando 0 de 0 operaciones</div>
+            <div class="page-controls">
+              <select class="page-size-select" id="sim-page-size" onchange="changePageSize('sim', this.value)">
+                <option value="10">10 por página</option>
+                <option value="25">25 por página</option>
+                <option value="50">50 por página</option>
+              </select>
+              <button class="page-btn" id="sim-prev-btn" onclick="prevPage('sim')" disabled>← Anterior</button>
+              <button class="page-btn" id="sim-next-btn" onclick="nextPage('sim')" disabled>Siguiente →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consola de Auditoría en Tiempo Real (Live Event Stream) -->
+      <div class="section-wrap">
+        <div class="section-head">
+          <div class="section-title">Consola de Auditoría en Vivo (Event Stream)</div>
+          <span class="section-count" id="audit-log-count">0 eventos capturados</span>
+        </div>
+
+        <div style="background:rgba(15, 23, 42, 0.8); border:1px solid var(--border); border-radius:8px; padding:16px; font-family:var(--font-mono); font-size:11px; max-height:280px; overflow-y:auto;" id="audit-terminal-feed">
+          <div style="color:var(--text-dim); text-align:center; padding:12px;">Conectando con el buffer de auditoría en vivo...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const state = {
+      mode: 'real',
+      lastStatusData: null,
+      pagination: {
+        real: { page: 1, pageSize: 10, total: 0, items: [] },
+        sim: { page: 1, pageSize: 10, total: 0, items: [] }
+      }
+    };
+
+    function setMode(mode) {
+      state.mode = mode;
+      const btnReal = document.getElementById('btn-real');
+      const btnSim = document.getElementById('btn-sim');
+      const paneReal = document.getElementById('pane-real');
+      const paneSim = document.getElementById('pane-sim');
+
+      if (mode === 'real') {
+        btnReal.className = 'segment-btn active real';
+        btnSim.className = 'segment-btn sim';
+        paneReal.className = 'view-pane active';
+        paneSim.className = 'view-pane';
+      } else {
+        btnReal.className = 'segment-btn real';
+        btnSim.className = 'segment-btn active sim';
+        paneReal.className = 'view-pane';
+        paneSim.className = 'view-pane active';
+
+        setTimeout(() => {
+          syncTradingViewInstances(state.lastStatusData, true);
+        }, 150);
+      }
+    }
+
+    function changePageSize(context, newSize) {
+      state.pagination[context].pageSize = parseInt(newSize, 10);
+      state.pagination[context].page = 1;
+      renderTable(context);
+    }
+
+    function prevPage(context) {
+      if (state.pagination[context].page > 1) {
+        state.pagination[context].page--;
+        renderTable(context);
+      }
+    }
+
+    function nextPage(context) {
+      const p = state.pagination[context];
+      const maxPages = Math.ceil(p.total / p.pageSize);
+      if (p.page < maxPages) {
+        p.page++;
+        renderTable(context);
+      }
+    }
+
+    function renderTable(context) {
+      const p = state.pagination[context];
+      const tbody = document.getElementById(context + '-trades-tbody');
+      const pageInfo = document.getElementById(context + '-page-info');
+      const prevBtn = document.getElementById(context + '-prev-btn');
+      const nextBtn = document.getElementById(context + '-next-btn');
+
+      if (!tbody || !p.items) return;
+
+      const total = p.items.length;
+      p.total = total;
+      const start = (p.page - 1) * p.pageSize;
+      const end = Math.min(start + p.pageSize, total);
+      const pageSlice = p.items.slice(start, end);
+
+      if (pageInfo) pageInfo.textContent = `Mostrando ${total > 0 ? start + 1 : 0}-${end} de ${total} operaciones`;
+      if (prevBtn) prevBtn.disabled = p.page <= 1;
+      if (nextBtn) nextBtn.disabled = end >= total;
+
+      if (pageSlice.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-dim); padding:24px;">No hay registros disponibles.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = pageSlice.map(t => {
+        const timeStr = t.timestamp ? new Date(t.timestamp).toLocaleTimeString('es-MX') : '--:--';
+        const pnlColor = (t.pnlNet || 0) >= 0 ? 'var(--emerald)' : 'var(--rose)';
+        const pnlSign = (t.pnlNet || 0) >= 0 ? '+' : '';
+        const isLive = context === 'real';
+
+        return `
+          <tr>
+            <td>${timeStr}</td>
+            <td><span class="badge-pill ${t.venue === 'BASE_DEX' ? 'pill-green' : 'pill-cyan'}">${t.venue || 'BINANCE'}</span></td>
+            <td style="font-weight:700;">${t.assetOrPool || '--'}</td>
+            <td><span class="badge-pill ${t.action?.includes('STOP') ? 'pill-rose' : 'pill-amber'}">${t.action || '--'}</span></td>
+            <td>$${(t.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</td>
+            <td>${(t.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 6 })}</td>
+            <td style="color:${pnlColor}; font-weight:700;">${pnlSign}$${(t.pnlNet || 0).toFixed(4)} USD</td>
+            <td>${t.id ? t.id.substring(0, 14) : '--'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function updateDashboard() {
+      try {
+        const res = await fetch('/status');
+        const data = await res.json();
+        state.lastStatusData = data;
+
+        document.getElementById('system-time').textContent = new Date().toLocaleTimeString('es-MX');
+
+        // 2. Poblado de Vista Real
+        const realState = data.realState;
+        if (realState) {
+          const usdtBalance = realState.binanceLive?.usdt || 0;
+          const bnbBalance = realState.binanceLive?.bnb || 0.00015742;
+          const totalRealUsd = realState.binanceLive?.totalUsdEquivalent || (usdtBalance + bnbBalance * 580);
+          
+          if (document.getElementById('real-kpi-nav-usd')) {
+            document.getElementById('real-kpi-nav-usd').textContent = `$${usdtBalance.toFixed(2)} USDT`;
+          }
+          if (document.getElementById('real-kpi-nav-sub')) {
+            document.getElementById('real-kpi-nav-sub').textContent = usdtBalance > 0
+              ? `Fondeado: $${totalRealUsd.toFixed(2)} USD // Gas: ${bnbBalance.toFixed(6)} BNB`
+              : `Gas: ${bnbBalance.toFixed(6)} BNB // Esperando Depósito SPEI`;
+          }
+
+          const pnlUsd = realState.pnlRealSummary?.netProfitUsd || 0;
+          const roiPct = realState.pnlRealSummary?.roiPct || 0;
+          if (document.getElementById('real-kpi-pnl')) {
+            document.getElementById('real-kpi-pnl').textContent = `${pnlUsd >= 0 ? '+' : ''}$${pnlUsd.toFixed(2)} USD`;
+          }
+          if (document.getElementById('real-kpi-roi')) {
+            document.getElementById('real-kpi-roi').textContent = `${roiPct >= 0 ? '+' : ''}${roiPct.toFixed(2)}% ROI`;
+          }
+
+          if (document.getElementById('binance-usdt')) {
+            document.getElementById('binance-usdt').textContent = `$${usdtBalance.toFixed(2)} USDT`;
+          }
+          if (document.getElementById('binance-bnb')) {
+            document.getElementById('binance-bnb').textContent = `${bnbBalance.toFixed(6)} BNB`;
+          }
+
+          const baseEth = realState.baseL2Live?.ethBalance || 0;
+          const baseUsd = realState.baseL2Live?.usdEquivalent || 0;
+          const nftCount = (realState.activeNfts || []).length;
+          if (document.getElementById('base-eth-balance')) {
+            document.getElementById('base-eth-balance').textContent = `${baseEth.toFixed(6)} ETH`;
+          }
+          if (document.getElementById('base-usd-balance')) {
+            document.getElementById('base-usd-balance').textContent = `$${baseUsd.toFixed(2)} USD`;
+          }
+          if (document.getElementById('base-nft-count')) {
+            document.getElementById('base-nft-count').textContent = `${nftCount} NFTs en Aerodrome`;
+          }
+          if (document.getElementById('base-wallet-status')) {
+            document.getElementById('base-wallet-status').textContent = (baseEth > 0 || baseUsd > 0) ? 'FONDEADA (READY)' : 'ESPERANDO FONDEO';
+            document.getElementById('base-wallet-status').className = `badge-pill ${(baseEth > 0 || baseUsd > 0) ? 'pill-green' : 'pill-amber'}`;
+          }
+        }
+
+        // 3. Poblado de Vista Simulación (Conectado a la Sesión Viva de Compute-node)
+        const pm = data.paperMetrics || {};
+        const paperCapUsd = data.totalCapitalUsd || 200;
+
+        // EQUITY AUDITADA (identidad de conservacion). La formula anterior sumaba
+        // PnL bruto (sin fees), fees DEX sin restar gas/IL y el funding/unrealized de
+        // un hedge FUTUROS que nunca envio ordenes reales: el dashboard mostraba
+        // "+$5.42" cuando los libros auditados dicen -$4.05. Ahora el titular sale de
+        // data.equity (capital + PnL realizado - desplegado, verificado por invariante,
+        // auditoria independiente y cadena de hashes).
+        const eq = data.equity || {};
+        const auditedNavUsd = typeof eq.reconciledUsd === 'number' ? eq.reconciledUsd : paperCapUsd;
+        const auditedNetPnlUsd = auditedNavUsd - paperCapUsd;
+        const cexNetUsd = typeof eq.cexRealizedNetUsd === 'number' ? eq.cexRealizedNetUsd : 0;
+        const dexNetUsd = typeof eq.dexNetPnlUsd === 'number' ? eq.dexNetPnlUsd : 0;
+
+        // Futuros delta-neutral: SIMULACION sin ordenes reales (/fapi nunca se toca).
+        // Se muestra aparte y EXCLUIDA del titular.
+        const totalFuturesFundingUsd = data.futuresHedge?.totalAccumulatedFundingUsd || 0;
+        const totalFuturesUnrealizedUsd = data.futuresHedge?.totalUnrealizedPnlUsd || 0;
+        const futuresShadowUsd = totalFuturesFundingUsd + totalFuturesUnrealizedUsd;
+
+        const totalPortfolioPnlUsd = auditedNetPnlUsd;
+        const totalRoiPct = paperCapUsd > 0 ? (auditedNetPnlUsd / paperCapUsd) * 100 : 0;
+
+        const winRatePaper = pm.winRatePct !== undefined ? pm.winRatePct : 100;
+        const pfPaper = pm.profitFactor !== undefined ? pm.profitFactor : 1.0;
+        const tradesPaper = pm.totalTrades || 0;
+
+        const currentPortfolioNavUsd = auditedNavUsd;
+
+        document.getElementById('sim-kpi-nav-usd').textContent = `$${currentPortfolioNavUsd.toFixed(2)} USD`;
+        document.getElementById('sim-kpi-nav-usd').style.color = currentPortfolioNavUsd >= paperCapUsd ? 'var(--text)' : 'var(--rose)';
+        document.getElementById('sim-kpi-nav-sub').textContent = `Base Asignada: $${paperCapUsd.toFixed(2)} USD`;
+        const equityBadge = document.getElementById('sim-kpi-equity-badge');
+        if (equityBadge) {
+          equityBadge.textContent = totalPortfolioPnlUsd >= 0 ? `+$${totalPortfolioPnlUsd.toFixed(2)} NAV` : `-$${Math.abs(totalPortfolioPnlUsd).toFixed(2)} NAV`;
+          equityBadge.className = `badge-pill ${totalPortfolioPnlUsd >= 0 ? 'pill-green' : 'pill-rose'}`;
+        }
+
+        document.getElementById('sim-kpi-pnl').textContent = `${totalPortfolioPnlUsd >= 0 ? '+' : ''}$${totalPortfolioPnlUsd.toFixed(4)} USD`;
+        document.getElementById('sim-kpi-pnl').style.color = totalPortfolioPnlUsd >= 0 ? 'var(--emerald)' : 'var(--rose)';
+        document.getElementById('sim-kpi-pnl-usd').textContent = `CEX neto: ${cexNetUsd >= 0 ? '+' : ''}$${cexNetUsd.toFixed(2)} | DEX neto: ${dexNetUsd >= 0 ? '+' : ''}$${dexNetUsd.toFixed(2)} | Futuros (sombra, excluido): ${futuresShadowUsd >= 0 ? '+' : ''}$${futuresShadowUsd.toFixed(2)}`;
+        document.getElementById('sim-kpi-roi').textContent = `${totalRoiPct >= 0 ? '+' : ''}${totalRoiPct.toFixed(3)}% ROI`;
+        document.getElementById('sim-kpi-roi').className = `badge-pill ${totalRoiPct >= 0 ? 'pill-green' : 'pill-rose'}`;
+
+        document.getElementById('sim-kpi-winrate').textContent = `${winRatePaper.toFixed(1)}%`;
+        document.getElementById('sim-kpi-trades-count').textContent = `${tradesPaper} operaciones en vivo (PF: ${pfPaper.toFixed(2)})`;
+        document.getElementById('sim-kpi-regime').textContent = data.macroAllocation?.predominantRegime || 'BALANCED_RANGE';
+
+        // Render de Tarjetas Simuladas: CEX (Binance Spot)
+        const simContainer = document.getElementById('sim-tactical-grid');
+        if (simContainer) {
+          simContainer.innerHTML = '';
+
+          if (data.cex) {
+            for (const [ticker, item] of Object.entries(data.cex)) {
+              const price = item.lastMidPrice || item.lastPrice || 0;
+              const avg = item.avgPrice || price || 0;
+              
+              // Resolver el Take Profit exacto proyectado si no viene fijo en el bot
+              let tpPrice = item.tpPrice || (item.bot?.tp || 0);
+              const isAnchor = ticker === 'BTC' || ticker === 'ETH';
+              const tpMultiplier = isAnchor ? 0.024 : 0.038;
+              if ((!tpPrice || tpPrice <= 0) && avg > 0) {
+                tpPrice = avg * (1 + tpMultiplier);
+              }
+
+              const tpGainPct = avg > 0 && tpPrice > 0 ? ((tpPrice - avg) / avg) * 100 : (tpMultiplier * 100);
+              const tpGainUsd = (item.inventoryCostUsd || item.allocatedCashUsd || 15) * (tpGainPct / 100);
+
+              const stopPrice = item.stopPrice || (item.bot?.stop || 0);
+              const levels = item.levels || item.bot?.levels || [];
+              const nextUnfilled = levels.find(l => !l.filled);
+              const nextLvlPrice = nextUnfilled ? nextUnfilled.price : null;
+
+              let currentAction = "ESPERANDO CONDICIÓN SANA DE ENTRADA";
+              if (item.inPos) {
+                const tpDisplayStr = `$${tpPrice.toFixed(2)} (+${tpGainPct.toFixed(1)}% | +$${tpGainUsd.toFixed(2)} USD)`;
+                if (nextLvlPrice && price > nextLvlPrice) {
+                  currentAction = `EN POSICIÓN // APUNTANDO TP EN ${tpDisplayStr} Y RECOMPRA EN $${nextLvlPrice.toFixed(2)}`;
+                } else {
+                  currentAction = `EN POSICIÓN // APUNTANDO TP EN ${tpDisplayStr}`;
+                }
+              }
+
+              const invQty = item.qty || 0;
+              const invCost = item.inventoryCostUsd ?? (invQty * (item.avgPrice || 0));
+              const invVal = item.inventoryCurrentValueUsd ?? (invQty * price);
+              const openOrders = item.openOrdersUsd ?? 0;
+              const idleCash = item.idleCashUsd ?? (item.cashUsd || 0);
+              const realNav = item.realNavUsd ?? (idleCash + openOrders + invVal);
+              const pnlVal = item.unrealizedPnlUsd ?? (invVal - invCost);
+              const pnlPct = item.unrealizedPnlPct ?? (invCost > 0 ? ((invVal / invCost) - 1) * 100 : 0);
+
+              const card = document.createElement('div');
+              card.className = 'tactical-card';
+              card.innerHTML = `
+                <div class="card-title-row">
+                  <div>
+                    <div class="card-asset-name">${ticker} / USDT <span class="card-asset-book">${item.book}</span></div>
+                    <div class="card-role-desc">CEX Malla Maker (Binance) // Régimen: ${item.jevRegime || 'BALANCED'}</div>
+                  </div>
+                  <span class="badge-pill ${item.inPos ? 'pill-green' : 'pill-cyan'}">${item.inPos ? 'EN POSICIÓN' : 'ESPERANDO ENTRADA'}</span>
+                </div>
+
+                <!-- VALOR REAL LIQUIDATIVO DE LA POSICIÓN (MARK-TO-MARKET) -->
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:10px 12px; margin:8px 0; font-size:11px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="color:var(--text-dim); text-transform:uppercase; font-size:10px; font-weight:700;">Valor Real Liquidativo (NAV):</span>
+                    <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text);">$${realNav.toFixed(2)} USD</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px; color:var(--text-muted); margin-bottom:6px;">
+                    <span>Bolsa Total Asignada: $${(item.allocatedCashUsd || 0).toFixed(2)} USD</span>
+                    <span style="color:${pnlVal >= 0 ? 'var(--emerald)' : 'var(--rose)'}; font-weight:700;">
+                      ${pnlVal >= 0 ? '+' : ''}$${pnlVal.toFixed(2)} USD (${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%)
+                    </span>
+                  </div>
+
+                  <!-- Desglose de Capital Operativo (Moneda Comprada vs Órdenes vs Efectivo) -->
+                  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; background:rgba(0,0,0,0.25); border-radius:4px; padding:6px; font-family:var(--font-mono); font-size:10px; text-align:center;">
+                    <div style="border-right:1px solid rgba(255,255,255,0.08);">
+                      <div style="color:var(--cyan); font-weight:700;">$${invVal.toFixed(2)}</div>
+                      <div style="color:var(--text-dim); font-size:9px;">EN MONEDA (${invQty > 0 ? (invQty < 0.01 ? invQty.toFixed(5) : invQty.toFixed(3)) : '0'} ${ticker})</div>
+                    </div>
+                    <div style="border-right:1px solid rgba(255,255,255,0.08);">
+                      <div style="color:var(--amber); font-weight:700;">$${openOrders.toFixed(2)}</div>
+                      <div style="color:var(--text-dim); font-size:9px;">EN ÓRDENES</div>
+                    </div>
+                    <div>
+                      <div style="color:#94a3b8; font-weight:700;">$${idleCash.toFixed(2)}</div>
+                      <div style="color:var(--text-dim); font-size:9px;">EFECTIVO QUIETO</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:6px 10px; margin-bottom:8px; font-size:10px;">
+                  <span style="color:var(--text-dim); font-weight:700;">ACCIÓN TÁCTICA:</span>
+                  <span style="color:var(--cyan); font-weight:600; margin-left:4px;">${currentAction}</span>
+                </div>
+
+                <div class="stat-list">
+                  <div class="stat-item">
+                    <span class="stat-label">Precio Spot Binance:</span>
+                    <span class="stat-val">$${price.toFixed(2)} USD</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Costo Entrada Promedio:</span>
+                    <span class="stat-val">${item.inPos ? '$' + (item.avgPrice || 0).toFixed(2) : '--'}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Próxima Recompra / TP:</span>
+                    <span class="stat-val" style="font-family:var(--font-mono); font-size:11px;">
+                      ${nextLvlPrice ? 'Lvl: $' + nextLvlPrice.toFixed(2) : 'Sin Lvl'} // TP: $${tpPrice.toFixed(2)} (+${tpGainPct.toFixed(1)}%)
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Stop Loss Defensivo:</span>
+                    <span class="stat-val" style="color:var(--rose); font-family:var(--font-mono); font-size:11px;">
+                      ${stopPrice > 0 ? '$' + stopPrice.toFixed(2) : 'Protegido Laya'}
+                    </span>
+                  </div>
+                </div>
+              `;
+              simContainer.appendChild(card);
+            }
+          }
+
+          // 2. Tarjetas DEX
+          if (data.dex) {
+            for (const [ticker, item] of Object.entries(data.dex)) {
+              const poolSymbol = typeof item.pool === 'string' ? item.pool : (item.pool?.symbol || ticker);
+              const lower = item.lowerRangePrice || item.positionSnapshot?.lowerRangePrice || 0;
+              const upper = item.upperRangePrice || item.positionSnapshot?.upperRangePrice || 0;
+              const fees = item.accumulatedFeesUsd || item.positionSnapshot?.accumulatedFeesUsd || 0;
+              const status = item.status || item.positionSnapshot?.status || 'ACTIVE';
+              const capital = item.currentCapitalUsd || item.positionSnapshot?.currentCapitalUsd || 0;
+              const price = item.price || item.pool?.price || 0;
+
+              const inRange = price >= lower && price <= upper;
+              const distToLowerPct = lower > 0 ? (((price - lower) / price) * 100).toFixed(1) : '0';
+              const distToUpperPct = upper > 0 ? (((upper - price) / price) * 100).toFixed(1) : '0';
+
+              let dexAction = inRange
+                ? `COBRANDO COMISIONES EN RANGO (+${distToLowerPct}% al piso, +${distToUpperPct}% al techo)`
+                : `FUERA DE RANGO // ESPERANDO CALMA DE LAYA PARA RE-CENTRAR`;
+
+              const dexTotalVal = capital + fees;
+              const card = document.createElement('div');
+              card.className = 'tactical-card';
+              card.innerHTML = `
+                <div class="card-title-row">
+                  <div>
+                    <div class="card-asset-name">${poolSymbol} <span class="card-asset-book">${item.protocol || 'Aerodrome L2'}</span></div>
+                    <div class="card-role-desc">DEX Liquidez Concentrada // Slot: ${ticker}</div>
+                  </div>
+                  <span class="badge-pill ${inRange ? 'pill-green' : 'pill-amber'}">${inRange ? 'IN-RANGE' : 'OUT-OF-RANGE'}</span>
+                </div>
+
+                <!-- VALOR REAL EN CONTRATO INTELIGENTE (100% TRABAJANDO) -->
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:10px 12px; margin:8px 0; font-size:11px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="color:var(--text-dim); text-transform:uppercase; font-size:10px; font-weight:700;">Valor Real en Bóveda (NAV):</span>
+                    <span style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text);">$${dexTotalVal.toFixed(2)} USD</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px; color:var(--text-muted);">
+                    <span>Capital Bloqueado en Bóveda: $${capital.toFixed(2)} USD</span>
+                    <span style="color:var(--emerald); font-weight:700;">Fees: +$${fees.toFixed(4)} USD (${item.feeAprPct ? item.feeAprPct.toFixed(1) + '% APR' : '--'})</span>
+                  </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:6px 10px; margin-bottom:8px; font-size:10px;">
+                  <span style="color:var(--text-dim); font-weight:700;">ESTADO LP:</span>
+                  <span style="color:${inRange ? 'var(--emerald)' : 'var(--amber)'}; font-weight:600; margin-left:4px;">${dexAction}</span>
+                </div>
+
+                <div class="stat-list">
+                  <div class="stat-item">
+                    <span class="stat-label">Precio Relativo Spot:</span>
+                    <span class="stat-val">${price > 100 ? '$' + price.toFixed(2) : price.toFixed(4)}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Rango Concentrado:</span>
+                    <span class="stat-val" style="font-family:var(--font-mono); font-size:11px;">
+                      [${lower > 100 ? lower.toFixed(0) : lower.toFixed(4)} - ${upper > 100 ? upper.toFixed(0) : upper.toFixed(4)}]
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Margen al Límite:</span>
+                    <span class="stat-val" style="font-size:11px; color:var(--cyan);">
+                      Piso: -${distToLowerPct}% // Techo: +${distToUpperPct}%
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Comisiones Ganadas:</span>
+                    <span class="stat-val" style="color:var(--emerald); font-weight:700;">+$${fees.toFixed(4)} USD</span>
+                  </div>
+                </div>
+              `;
+              simContainer.appendChild(card);
+            }
+          }
+
+          // 3. Tarjetas de Cobertura de Futuros
+          if (data.futuresHedge && data.futuresHedge.positions) {
+            for (const pos of data.futuresHedge.positions) {
+              const card = document.createElement('div');
+              card.className = 'tactical-card';
+              card.style.border = '1px solid rgba(139, 92, 246, 0.3)';
+              card.innerHTML = `
+                <div class="card-title-row">
+                  <div>
+                    <div class="card-asset-name">${pos.symbol} <span class="card-asset-book">Futures 1x Short</span></div>
+                    <div class="card-role-desc">Cobertura Delta-Neutral de ${pos.underlyingDexSlot} // Funding Harvest</div>
+                  </div>
+                  <span class="badge-pill pill-cyan">${pos.status}</span>
+                </div>
+
+                <div style="background:rgba(139, 92, 246, 0.05); border:1px solid rgba(139, 92, 246, 0.15); border-radius:6px; padding:8px 10px; margin:8px 0; font-size:11px;">
+                  <div style="color:var(--text-dim); text-transform:uppercase; font-size:10px; font-weight:700;">Función del Derivado:</div>
+                  <div style="color:#c084fc; font-weight:600; margin-top:2px;">
+                    Short 1x neutralizando caída de ${pos.underlyingDexSlot} // Cosechando ${(pos.annualizedAprPct || 0).toFixed(1)}% APR
+                  </div>
+                </div>
+
+                <div class="stat-list">
+                  <div class="stat-item">
+                    <span class="stat-label">Mark Price Futuros:</span>
+                    <span class="stat-val">$${(pos.currentMarkPrice || 0).toFixed(2)} USD</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Nocional Cubierto:</span>
+                    <span class="stat-val">$${(pos.notionalUsd || 0).toFixed(2)} USD</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Tasa Fondeo (8h):</span>
+                    <span class="stat-val" style="color:var(--emerald); font-family:var(--font-mono); font-size:11px;">
+                      ${((pos.fundingRate || 0) * 100).toFixed(4)}% (+${(pos.annualizedAprPct || 0).toFixed(1)}% APR)
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Funding Cobrado:</span>
+                    <span class="stat-val" style="color:var(--emerald); font-weight:700;">+$${(pos.accumulatedFundingUsd || 0).toFixed(4)} USD</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">PnL Cobertura Short:</span>
+                    <span class="stat-val" style="color:${(pos.unrealizedPnlUsd || 0) >= 0 ? 'var(--emerald)' : 'var(--rose)'};">
+                      ${(pos.unrealizedPnlUsd || 0) >= 0 ? '+' : ''}$${(pos.unrealizedPnlUsd || 0).toFixed(4)} USD
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Salud de Margen:</span>
+                    <span class="stat-val" style="color:var(--cyan); font-weight:700;">
+                      ${((pos.marginHealthRatio || 1.0) * 100).toFixed(1)}% (Liq: $${(pos.liquidationPrice || 0).toFixed(0)})
+                    </span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Deadband Dinámico:</span>
+                    <span class="stat-val" style="color:#c084fc; font-family:var(--font-mono); font-size:11px;">
+                      ±${(pos.dynamicDeadbandPct || 5.0).toFixed(1)}% (${pos.temperatureRegime || 'BALANCED'})
+                    </span>
+                  </div>
+                </div>
+              `;
+              simContainer.appendChild(card);
+            }
+          }
+        }
+
+        // 4. Poblar Tablas de Operaciones Históricas
+        state.pagination.sim.items = data.history || [];
+        state.pagination.real.items = (data.realState && data.realState.deposits) ? data.realState.deposits : [];
+
+        renderTable('real');
+        renderTable('sim');
+
+        // 4.1 Fase 0: Atribución de PnL y estado de riesgo
+        try {
+          const risk = data.risk;
+          const killBadge = document.getElementById('risk-kill-badge');
+          if (risk) {
+            if (document.getElementById('risk-daily-pnl')) {
+              const dp = risk.dailyRealizedPnlUsd || 0;
+              const el = document.getElementById('risk-daily-pnl');
+              el.textContent = `${dp >= 0 ? '+' : ''}$${dp.toFixed(2)} USD`;
+              el.style.color = dp >= 0 ? 'var(--emerald)' : 'var(--rose)';
+            }
+            if (document.getElementById('risk-daily-limit')) {
+              document.getElementById('risk-daily-limit').textContent = `-$${(risk.dailyLossLimitUsd || 0).toFixed(2)} USD`;
+            }
+            if (document.getElementById('risk-exposure')) {
+              document.getElementById('risk-exposure').textContent = `$${(risk.aggregateExposureUsd || 0).toFixed(2)} / $${(risk.aggregateExposureLimitUsd || 0).toFixed(2)} USD`;
+            }
+            if (document.getElementById('risk-util')) {
+              document.getElementById('risk-util').textContent = `${(risk.exposureUtilizationPct || 0).toFixed(1)}%`;
+            }
+            if (killBadge) {
+              if (risk.killed) {
+                killBadge.textContent = `KILL-SWITCH ACTIVO (${risk.killSource || 'AUTO'})`;
+                killBadge.style.background = 'rgba(244,63,94,0.15)';
+                killBadge.style.color = 'var(--rose)';
+              } else {
+                killBadge.textContent = 'RIESGO OK';
+                killBadge.style.background = 'rgba(16,185,129,0.15)';
+                killBadge.style.color = 'var(--emerald)';
+              }
+            }
+          }
+
+          const attrBody = document.getElementById('attribution-tbody');
+          const attribution = data.attribution || [];
+          if (attrBody) {
+            if (attribution.length === 0) {
+              attrBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-dim); padding:12px;">Sin datos aún.</td></tr>`;
+            } else {
+              attrBody.innerHTML = attribution.map(a => {
+                const col = (a.netPnlUsd || 0) >= 0 ? 'var(--emerald)' : 'var(--rose)';
+                const sign = (a.netPnlUsd || 0) >= 0 ? '+' : '';
+                return `<tr>
+                  <td style="font-weight:700;">${a.component}</td>
+                  <td>${a.trades}</td>
+                  <td>$${(a.grossPnlUsd || 0).toFixed(3)}</td>
+                  <td style="color:var(--text-dim);">$${(a.feesUsd || 0).toFixed(3)}</td>
+                  <td style="color:${col}; font-weight:700;">${sign}$${(a.netPnlUsd || 0).toFixed(3)}</td>
+                </tr>`;
+              }).join('');
+            }
+          }
+        } catch (e) {}
+
+        // Sincronizar TradingView con los datos más recientes
+        syncTradingViewInstances(data);
+
+        // 5. Consola de Auditoría en Tiempo Real
+        try {
+          const auditRes = await fetch('/audit/logs?limit=30');
+          const auditData = await auditRes.json();
+          const terminalEl = document.getElementById('audit-terminal-feed');
+          const countEl = document.getElementById('audit-log-count');
+
+          if (auditData && auditData.events && terminalEl) {
+            if (countEl) countEl.textContent = `${auditData.events.length} eventos en buffer`;
+            if (auditData.events.length === 0) {
+              terminalEl.innerHTML = '<div style="color:var(--text-dim); text-align:center; padding:12px;">Sin eventos registrados aún en el buffer.</div>';
+            } else {
+              terminalEl.innerHTML = auditData.events.map(e => {
+                const time = new Date(e.timestamp).toLocaleTimeString('es-MX');
+                const catColor = e.category === 'SETS' ? '#38bdf8' : e.category === 'CEX' ? '#34d399' : e.category === 'DEX' ? '#fbbf24' : '#c084fc';
+                const levelColor = e.level === 'CRITICAL' ? 'var(--rose)' : e.level === 'WARN' ? 'var(--amber)' : 'var(--emerald)';
+
+                return `
+                  <div style="margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.04); padding-bottom:4px; line-height:1.4;">
+                    <span style="color:var(--text-dim);">[${time}]</span>
+                    <span style="color:${catColor}; font-weight:700;">[${e.category}]</span>
+                    <span style="color:${levelColor}; font-weight:600;">[${e.trigger}]</span>
+                    <span style="color:var(--text); font-weight:700;">${e.assetOrPool}:</span>
+                    <span style="color:var(--text-muted);">${e.details}</span>
+                  </div>
+                `;
+              }).join('');
+            }
+          }
+        } catch {}
+
+      } catch (err) {
+        console.error('Error actualizando terminal:', err);
+      }
+    }
+
+    function triggerFlattenReal() {
+      if (confirm('¿CONFIRMAR FLATTEN REAL? Se cancelarán todas las órdenes vivas en Binance Spot y se mantendrá el balance en USDT.')) {
+        fetch('/flatten', { method: 'POST' }).then(() => alert('Comando Flatten enviado.'));
+      }
+    }
+
+    function togglePause(mode) {
+      fetch('/pause', { method: 'POST', body: JSON.stringify({ mode }) })
+        .then(() => alert('Comando de pausa enviado para: ' + mode));
+    }
+
+    setInterval(updateDashboard, 2500);
+    updateDashboard();
+
+    // -------------------------------------------------------------
+    // SUPER-TERMINAL CUANTITATIVA DINÁMICA TRADINGVIEW (ROBUSTA)
+    // -------------------------------------------------------------
+    const tvState = {
+      layout: 'FOCUS',
+      timeframe: '1h',
+      selectedTicker: 'BTC',
+      instances: new Map(),
+      lastTickersSignature: '',
+    };
+
+    function changeTvTimeframe(tf) {
+      tvState.timeframe = tf;
+      document.getElementById('tv-tf-15m')?.classList.replace('pill-green', 'pill-cyan');
+      document.getElementById('tv-tf-1h')?.classList.replace('pill-green', 'pill-cyan');
+      document.getElementById('tv-tf-4h')?.classList.replace('pill-green', 'pill-cyan');
+
+      if (tf === '15m') document.getElementById('tv-tf-15m')?.classList.replace('pill-cyan', 'pill-green');
+      if (tf === '1h') document.getElementById('tv-tf-1h')?.classList.replace('pill-cyan', 'pill-green');
+      if (tf === '4h') document.getElementById('tv-tf-4h')?.classList.replace('pill-cyan', 'pill-green');
+
+      syncTradingViewInstances(state.lastStatusData, true);
+    }
+
+    function toggleTvLayout() {
+      tvState.layout = tvState.layout === 'FOCUS' ? 'GRID' : 'FOCUS';
+      const btn = document.getElementById('tv-layout-toggle-btn');
+      if (btn) {
+        btn.textContent = tvState.layout === 'FOCUS' ? 'VISTA: FOCO (1X)' : 'VISTA: MULTI-GRID';
+        btn.className = `badge-pill ${tvState.layout === 'FOCUS' ? 'pill-cyan' : 'pill-green'}`;
+      }
+      syncTradingViewInstances(state.lastStatusData, true);
+    }
+
+    function selectTvFocusTicker(ticker) {
+      tvState.selectedTicker = ticker;
+      syncTradingViewInstances(state.lastStatusData, true);
+    }
+
+    function resetTvChartFocus(ticker) {
+      const inst = tvState.instances.get(ticker);
+      if (inst && inst.chart) {
+        inst.chart.timeScale().fitContent();
+        inst.chart.priceScale().applyOptions({ autoScale: true });
+      }
+    }
+
+    // Extracción limpia y estricta del universo de activos operados REALMENTE
+    function extractActiveUniverseTickers(data) {
+      if (!data) return ['BTC', 'SOL'];
+      const tickers = new Set();
+
+      // 1. Activos con bot CEX Spot activo
+      if (data.cex) {
+        for (const [t, item] of Object.entries(data.cex)) {
+          if (item && (item.inPos || item.allocatedCashUsd > 0)) {
+            tickers.add(t);
+          }
+        }
+      }
+
+      // 2. Activos con piscina DEX en Base L2 (por token volátil real en el pool, no por nombre de slot)
+      if (data.dex) {
+        for (const [, item] of Object.entries(data.dex)) {
+          const poolSym = item.pool || '';
+          if (poolSym.includes('CBBTC') || poolSym.includes('BTC') || poolSym.includes('WETH')) {
+            tickers.add('BTC');
+          } else if (poolSym.includes('AERO')) {
+            tickers.add('AERO');
+          } else if (poolSym.includes('SOL')) {
+            tickers.add('SOL');
+          }
+        }
+      }
+
+      // 3. Activos con contrato de cobertura en Futuros activo
+      if (data.futuresHedge && data.futuresHedge.positions) {
+        for (const pos of data.futuresHedge.positions) {
+          const t = pos.symbol.replace('USDT', '');
+          if (t === 'ETH') tickers.add('BTC');
+          else if (pos.notionalUsd > 0) tickers.add(t);
+        }
+      }
+
+      const list = Array.from(tickers).filter(Boolean);
+      return list.length > 0 ? list : ['BTC', 'SOL'];
+    }
+
+    async function syncTradingViewInstances(statusData, forceRebuild = false) {
+      if (!window.LightweightCharts || !statusData) return;
+      state.lastStatusData = statusData;
+
+      const universe = extractActiveUniverseTickers(statusData);
+      if (!tvState.selectedTicker || !universe.includes(tvState.selectedTicker)) {
+        tvState.selectedTicker = universe[0] || 'BTC';
+      }
+
+      // 1. Selector de Píldoras Dinámicas
+      const selectorGroup = document.getElementById('tv-symbol-selector-group');
+      if (selectorGroup) {
+        selectorGroup.innerHTML = universe.map(t => {
+          const isSelected = t === tvState.selectedTicker;
+          const pillClass = isSelected ? 'pill-cyan' : 'pill-amber';
+          return `<button class="badge-pill ${pillClass}" style="cursor:pointer; border:none; outline:none; font-weight:700;" onclick="selectTvFocusTicker('${t}')">${t} / USD</button>`;
+        }).join('');
+      }
+
+      const tickersToRender = tvState.layout === 'FOCUS' ? [tvState.selectedTicker] : universe;
+      const signature = `${tvState.layout}_${tickersToRender.join(',')}`;
+      const wrapper = document.getElementById('tv-charts-wrapper');
+      if (!wrapper) return;
+
+      const needsRebuild = forceRebuild || (signature !== tvState.lastTickersSignature) || (wrapper.children.length === 0);
+
+      if (needsRebuild) {
+        wrapper.innerHTML = '';
+        tvState.instances.clear();
+        tvState.lastTickersSignature = signature;
+
+        if (tvState.layout === 'GRID') {
+          wrapper.style.display = 'flex';
+          wrapper.style.flexDirection = 'column'; // 3 líneas independientes (ancho completo cada una)
+          wrapper.style.gap = '20px';
+        } else {
+          wrapper.style.display = 'flex';
+          wrapper.style.flexDirection = 'column';
+          wrapper.style.gap = '16px';
+        }
+
+        for (const ticker of tickersToRender) {
+          const chartBox = document.createElement('div');
+          chartBox.className = 'tactical-card';
+          chartBox.style.margin = '0';
+          chartBox.style.padding = '12px';
+          chartBox.style.border = '1px solid var(--border)';
+
+          const containerId = `tv-container-${ticker}`;
+          chartBox.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+              <div>
+                <span class="card-asset-name">${ticker} / USDT <span class="card-asset-book" id="tv-status-badge-${ticker}">Sincronizando capas...</span></span>
+                <span class="card-role-desc" id="tv-price-tag-${ticker}" style="font-family:var(--font-mono); font-weight:700; color:var(--cyan); margin-left:8px;">--</span>
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <!-- Botón de Auto-Centrado -->
+                <button class="badge-pill pill-cyan" style="cursor:pointer; border:1px solid rgba(255,255,255,0.15); outline:none; font-size:10px;" onclick="resetTvChartFocus('${ticker}')">Auto-Centrar ⌖</button>
+              </div>
+            </div>
+            <div id="${containerId}" style="width:100%; height:${tvState.layout === 'FOCUS' ? 440 : 340}px;"></div>
+
+            <!-- Acotación Dedicada y Dinámica para este Visor -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; font-family:var(--font-mono); flex-wrap:wrap; gap:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+              <div id="tv-legend-${ticker}" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <!-- Render dinámico de acotaciones con valores exactos -->
+              </div>
+              <div id="tv-out-of-range-tag-${ticker}" style="font-size:10px; color:var(--amber); font-weight:600;"></div>
+            </div>
+          `;
+          wrapper.appendChild(chartBox);
+
+          // Inicializar gráfico en el frame siguiente para asegurar ancho calculado en DOM
+          setTimeout(() => {
+            initSingleChart(ticker, containerId, statusData);
+          }, 30);
+        }
+      } else {
+        for (const ticker of tickersToRender) {
+          updateChartTactics(ticker, statusData);
+        }
+      }
+    }
+
+    function initSingleChart(ticker, containerId, statusData) {
+      const container = document.getElementById(containerId);
+      if (!container || !window.LightweightCharts) return;
+
+      const chartHeight = tvState.layout === 'FOCUS' ? 440 : 320;
+      const chartWidth = Math.max(300, container.clientWidth || 360);
+
+      const chart = LightweightCharts.createChart(container, {
+        width: chartWidth,
+        height: chartHeight,
+        layout: {
+          background: { type: 'solid', color: '#0f131f' },
+          textColor: '#94a3b8',
+          fontSize: 11,
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255, 255, 255, 0.03)' },
+          horzLines: { color: 'rgba(255, 255, 255, 0.03)' },
+        },
+        timeScale: {
+          timeVisible: true,
+          secondsVisible: false,
+          borderColor: 'rgba(255, 255, 255, 0.08)',
+          tickMarkFormatter: (time) => {
+            const date = new Date(time * 1000);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+          },
+        },
+        localization: {
+          locale: 'es-MX',
+          timeFormatter: (time) => {
+            const date = new Date(time * 1000);
+            return date.toLocaleString('es-MX', {
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            });
+          },
+        },
+        rightPriceScale: {
+          borderColor: 'rgba(255, 255, 255, 0.08)',
+          scaleMargins: { top: 0.15, bottom: 0.15 },
+        },
+        handleScroll: { vertTouchDrag: false },
+      });
+
+      const candleSeries = chart.addCandlestickSeries({
+        upColor: '#10b981',
+        downColor: '#f43f5e',
+        borderVisible: false,
+        wickUpColor: '#10b981',
+        wickDownColor: '#f43f5e',
+        priceLineVisible: true,        // Dibuja la línea horizontal del precio actual en vivo
+        priceLineWidth: 2,             // Grosor visible
+        priceLineColor: '#06b6d4',     // Color cian brillante institucional
+        priceLineStyle: LightweightCharts.LineStyle.Dotted, // Estilo punteado activo
+        lastValueVisible: true,        // Muestra la etiqueta con el precio exacto en el eje vertical
+      });
+
+      // Serie de Volumen en Histograma (Parte inferior del gráfico)
+      const volumeSeries = chart.addHistogramSeries({
+        priceFormat: { type: 'volume' },
+        priceScaleId: '', // Escala propia desacoplada del precio
+        scaleMargins: {
+          top: 0.82, // Ocupa el 18% inferior del lienzo
+          bottom: 0,
+        },
+      });
+
+      tvState.instances.set(ticker, {
+        chart,
+        candleSeries,
+        volumeSeries,
+        priceLines: [],
+        containerId,
+      });
+
+      window.addEventListener('resize', () => {
+        if (chart && container && container.clientWidth > 0) {
+          chart.applyOptions({ width: container.clientWidth });
+        }
+      });
+
+      const symbol = `${ticker}USDT`;
+      fetch(`/api/klines?symbol=${symbol}&interval=${tvState.timeframe}&limit=120`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.candles && data.candles.length > 0) {
+            candleSeries.setData(data.candles);
+
+            // Poblar serie de volumen con colores según vela alcista/bajista
+            const volData = data.candles.map(c => ({
+              time: c.time,
+              value: c.volume,
+              color: c.close >= c.open ? 'rgba(16, 185, 129, 0.25)' : 'rgba(244, 63, 94, 0.25)',
+            }));
+            volumeSeries.setData(volData);
+
+            chart.timeScale().fitContent();
+
+            const last = data.candles[data.candles.length - 1];
+            const tag = document.getElementById(`tv-price-tag-${ticker}`);
+            if (tag) tag.textContent = `$${last.close.toFixed(2)} USD`;
+          }
+          updateChartTactics(ticker, statusData);
+        }).catch(() => {});
+    }
+
+    function updateChartTactics(ticker, statusData) {
+      const inst = tvState.instances.get(ticker);
+      if (!inst || !inst.candleSeries) return;
+      const { candleSeries } = inst;
+
+      for (const line of inst.priceLines) {
+        try { candleSeries.removePriceLine(line); } catch {}
+      }
+      inst.priceLines = [];
+
+      const activeLayers = [];
+
+      // 1. CAPA CEX SPOT
+      const cexItem = statusData.cex?.[ticker];
+      if (cexItem) {
+        activeLayers.push('CEX');
+        if (cexItem.levels) {
+          for (const lvl of cexItem.levels) {
+            if (lvl.filled) {
+              const l = candleSeries.createPriceLine({
+                price: lvl.price,
+                color: '#38bdf8',
+                lineWidth: 2,
+                lineStyle: LightweightCharts.LineStyle.Solid,
+                axisLabelVisible: true,
+                title: `${lvl.name} LLENADO ($${(lvl.amountUsd || 0).toFixed(1)})`,
+              });
+              inst.priceLines.push(l);
+            } else {
+              const l = candleSeries.createPriceLine({
+                price: lvl.price,
+                color: '#10b981',
+                lineWidth: 1,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                axisLabelVisible: true,
+                title: `${lvl.name} RECOMPRA ($${(lvl.amountUsd || 0).toFixed(1)})`,
+              });
+              inst.priceLines.push(l);
+            }
+          }
+        }
+
+        // 3. Take Profit Objetivo Dinámico (Garantizado Visible con Proyección de Beneficio)
+        const avg = cexItem.avgPrice || cexItem.lastPrice || 0;
+        let effectiveTpPrice = cexItem.tpPrice;
+        if (!effectiveTpPrice || effectiveTpPrice <= 0) {
+          // Si el bot aún no tiene TP estático, proyectarlo con el Take Profit del genoma o ATR dinámico
+          const isAnchor = ticker === 'BTC' || ticker === 'ETH';
+          const tpMultiplier = isAnchor ? 0.024 : 0.038;
+          effectiveTpPrice = avg * (1 + tpMultiplier);
+        }
+
+        if (effectiveTpPrice > 0 && avg > 0) {
+          const tpGainPct = ((effectiveTpPrice - avg) / avg) * 100;
+          const tpGainUsd = (cexItem.allocatedCashUsd || 15) * (tpGainPct / 100);
+          const tp = candleSeries.createPriceLine({
+            price: effectiveTpPrice,
+            color: '#34d399',
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+            axisLabelVisible: true,
+            title: `TAKE PROFIT (+$${tpGainUsd.toFixed(2)} | +${tpGainPct.toFixed(1)}%)`,
+          });
+          inst.priceLines.push(tp);
+        }
+
+        if (cexItem.stopPrice && cexItem.stopPrice > 0) {
+          const sl = candleSeries.createPriceLine({
+            price: cexItem.stopPrice,
+            color: '#f43f5e',
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+            axisLabelVisible: true,
+            title: 'STOP INVISIBLE',
+          });
+          inst.priceLines.push(sl);
+        }
+
+        if (cexItem.lastPrice && cexItem.lastPrice > 0) {
+          const nowSec = Math.floor(Date.now() / 1000);
+          candleSeries.update({
+            time: nowSec - (nowSec % 3600),
+            open: cexItem.avgPrice || cexItem.lastPrice,
+            high: Math.max(cexItem.lastPrice, cexItem.avgPrice || cexItem.lastPrice),
+            low: Math.min(cexItem.lastPrice, cexItem.avgPrice || cexItem.lastPrice),
+            close: cexItem.lastPrice,
+          });
+          const tag = document.getElementById(`tv-price-tag-${ticker}`);
+          if (tag) tag.textContent = `$${cexItem.lastPrice.toFixed(2)} USD`;
+        }
+      }
+
+      // =========================================================
+      // 2. CAPA DEX (LÍMITES DEL RANGO CONCENTRADO EN BASE L2)
+      // =========================================================
+      const matchedDexPools = [];
+      if (statusData.dex) {
+        for (const [slot, item] of Object.entries(statusData.dex)) {
+          const poolSym = item.pool || slot || '';
+          if (ticker === 'BTC' && (poolSym.includes('CBBTC') || poolSym.includes('BTC'))) {
+            if (item.lowerRangePrice > 1000) {
+              matchedDexPools.push(item);
+            }
+          } else if (ticker === 'AERO') {
+            if (poolSym.includes('AERO') && item.lowerRangePrice < 10) {
+              matchedDexPools.push(item);
+            }
+          } else if (ticker === 'ETH' && poolSym.includes('WETH')) {
+            matchedDexPools.push(item);
+          } else if (poolSym.includes(ticker)) {
+            matchedDexPools.push(item);
+          }
+        }
+      }
+
+      const dexColors = [
+        { up: '#c084fc', down: '#a855f7', name: 'RANGO A' },
+        { up: '#e879f9', down: '#d946ef', name: 'RANGO B' },
+        { up: '#818cf8', down: '#6366f1', name: 'RANGO C' },
+      ];
+
+      matchedDexPools.forEach((dPool, idx) => {
+        if (dPool.lowerRangePrice && dPool.upperRangePrice) {
+          activeLayers.push('DEX');
+          const pal = dexColors[idx % dexColors.length];
+          const up = candleSeries.createPriceLine({
+            price: dPool.upperRangePrice,
+            color: pal.up,
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: `DEX TECHO [${dPool.pool || 'DEX'}] ($${dPool.upperRangePrice > 100 ? dPool.upperRangePrice.toFixed(0) : dPool.upperRangePrice.toFixed(3)})`,
+          });
+          const down = candleSeries.createPriceLine({
+            price: dPool.lowerRangePrice,
+            color: pal.down,
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: `DEX PISO [${dPool.pool || 'DEX'}] ($${dPool.lowerRangePrice > 100 ? dPool.lowerRangePrice.toFixed(0) : dPool.lowerRangePrice.toFixed(3)})`,
+          });
+          inst.priceLines.push(up);
+          inst.priceLines.push(down);
+        }
+      });
+
+      // =========================================================
+      // 3. CAPA FUTUROS COBERTURA DELTA-NEUTRAL (BINANCE FUTURES)
+      // =========================================================
+      let hedgePos = null;
+      if (statusData.futuresHedge && statusData.futuresHedge.positions) {
+        // Encontrar la posición de cobertura cuyo contrato cubra este activo de forma estricta
+        hedgePos = statusData.futuresHedge.positions.find(p => {
+          const sym = p.symbol || '';
+          return sym === `${ticker}USDT` || (ticker === 'BTC' && sym.includes('BTC'));
+        });
+      }
+
+      if (hedgePos && hedgePos.entryMarkPrice && hedgePos.entryMarkPrice > 0) {
+        activeLayers.push('HEDGE');
+        const h = candleSeries.createPriceLine({
+          price: hedgePos.entryMarkPrice,
+          color: '#8b5cf6', // Púrpura intenso
+          lineWidth: 2,
+          lineStyle: LightweightCharts.LineStyle.Solid,
+          axisLabelVisible: true,
+          title: `SHORT 1X ($${(hedgePos.notionalUsd || 0).toFixed(1)} | +${(hedgePos.annualizedAprPct || 0).toFixed(1)}% APR)`,
+        });
+        inst.priceLines.push(h);
+      }
+
+      // 4. Render Dinámico de Acotaciones con Valores Numéricos Reales
+      const legendEl = document.getElementById(`tv-legend-${ticker}`);
+      if (legendEl) {
+        const legendItems = [];
+
+        // Precio Actual en Vivo
+        if (cexItem?.lastPrice) {
+          legendItems.push(`<span style="color:#06b6d4; font-weight:700;">Spot: $${cexItem.lastPrice.toFixed(2)}</span>`);
+        } else if (inst.candleSeries) {
+          legendItems.push(`<span style="color:#06b6d4; font-weight:700;">Precio Vivo</span>`);
+        }
+
+        // CEX Niveles Llenados y Recompras
+        if (cexItem?.levels) {
+          for (const lvl of cexItem.levels) {
+            if (lvl.filled) {
+              legendItems.push(`<span style="color:#38bdf8; font-weight:700;">${lvl.name}: $${lvl.price.toFixed(2)}</span>`);
+            } else {
+              legendItems.push(`<span style="color:#10b981; font-weight:700;">${lvl.name} Rec: $${lvl.price.toFixed(2)}</span>`);
+            }
+          }
+        }
+
+        // CEX Take Profit
+        if (effectiveTpPrice > 0) {
+          legendItems.push(`<span style="color:#34d399; font-weight:700;">TP: $${effectiveTpPrice.toFixed(2)}</span>`);
+        }
+
+        // CEX Stop Loss
+        if (cexItem?.stopPrice && cexItem.stopPrice > 0) {
+          legendItems.push(`<span style="color:#f43f5e; font-weight:700;">Stop: $${cexItem.stopPrice.toFixed(2)}</span>`);
+        }
+
+        // DEX Rangos Concentrados
+        matchedDexPools.forEach((dPool, idx) => {
+          if (dPool.lowerRangePrice && dPool.upperRangePrice) {
+            const pal = dexColors[idx % dexColors.length];
+            legendItems.push(`<span style="color:${pal.up}; font-weight:700;">DEX [${dPool.pool || 'DEX'}: ${dPool.lowerRangePrice > 100 ? dPool.lowerRangePrice.toFixed(0) : dPool.lowerRangePrice.toFixed(4)} - ${dPool.upperRangePrice > 100 ? dPool.upperRangePrice.toFixed(0) : dPool.upperRangePrice.toFixed(4)}]</span>`);
+          }
+        });
+
+        // Futuros Hedge Short 1x
+        if (hedgePos) {
+          legendItems.push(`<span style="color:#8b5cf6; font-weight:700;">Short 1x: $${hedgePos.entryMarkPrice.toFixed(2)} (+${(hedgePos.annualizedAprPct || 0).toFixed(1)}% APR)</span>`);
+        }
+
+        legendEl.innerHTML = legendItems.join('&nbsp;|&nbsp;');
+      }
+
+      // 5. Auditoría de Niveles Fuera de Escala (Out-of-Scale Indicator)
+      const outOfScaleLevels = [];
+      const currentPrice = cexItem?.lastPrice || 0;
+      if (cexItem?.stopPrice && currentPrice > 0) {
+        const distStop = ((cexItem.stopPrice - currentPrice) / currentPrice) * 100;
+        outOfScaleLevels.push(`Stop: $${cexItem.stopPrice.toFixed(0)} (${distStop.toFixed(1)}%)`);
+      }
+      for (const dPool of matchedDexPools) {
+        if (dPool.lowerRangePrice && currentPrice > 0) {
+          outOfScaleLevels.push(`DEX Piso: $${dPool.lowerRangePrice > 100 ? dPool.lowerRangePrice.toFixed(0) : dPool.lowerRangePrice.toFixed(4)}`);
+        }
+      }
+      if (hedgePos?.liquidationPrice) {
+        outOfScaleLevels.push(`Liq Short: $${hedgePos.liquidationPrice.toFixed(0)}`);
+      }
+
+      const outOfRangeTag = document.getElementById(`tv-out-of-range-tag-${ticker}`);
+      if (outOfRangeTag) {
+        outOfRangeTag.textContent = outOfScaleLevels.length > 0 ? `Fuera de Escala ⇕ [${outOfScaleLevels.join(' | ')}]` : '';
+      }
+
+      const badge = document.getElementById(`tv-status-badge-${ticker}`);
+      if (badge) {
+        badge.textContent = `Capas: [${activeLayers.join(' + ')}]`;
+      }
+    }
+
+    async function riskKill() {
+      try {
+        await fetch('/kill?reason=' + encodeURIComponent('Kill-switch manual desde dashboard'), { method: 'POST' });
+        updateDashboard();
+      } catch (e) {}
+    }
+
+    async function riskUnkill() {
+      try {
+        await fetch('/unkill', { method: 'POST' });
+        updateDashboard();
+      } catch (e) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        syncTradingViewInstances(state.lastStatusData, true);
+      }, 500);
+    });
+  </script>
+</body>
+</html>

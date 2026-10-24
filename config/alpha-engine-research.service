@@ -1,0 +1,10 @@
+[Unit]
+Description=Alpha Engine Weekly Autonomous Research Runner
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/user/proyectos/alpha-engine
+ExecStart=/home/user/.local/bin/bun run src/research/run-research.ts
+StandardOutput=journal
+StandardError=journal

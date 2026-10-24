@@ -1,0 +1,9 @@
+[Unit]
+Description=Trigger Alpha Engine Research Weekly on Sunday 20:00 CST
+
+[Timer]
+OnCalendar=Sun *-*-* 20:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

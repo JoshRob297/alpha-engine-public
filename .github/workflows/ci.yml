@@ -1,0 +1,25 @@
+name: validacion
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.0"
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+      - name: Typecheck (motor)
+        run: bun run typecheck
+      - name: Typecheck (scripts + motor)
+        run: bun run typecheck:scripts
+      - name: Tests (sin red)
+        run: OFFLINE=1 bun test
+      - name: Demo del kit de auditoria
+        run: bun run audit:demo
